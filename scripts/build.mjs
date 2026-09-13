@@ -2,8 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const sourcePath = path.resolve('index.html');
-const outDir = path.resolve('dist');
-const outPath = path.join(outDir, 'index.html');
+const outputDirs = [path.resolve('dist'), path.resolve('public')];
 const portalUrl = 'https://main-service-intelligence-portal-st.vercel.app/';
 
 let html = fs.readFileSync(sourcePath, 'utf8');
@@ -42,6 +41,13 @@ if (html.includes("user === 'admin' && pass === 'admin'") || html.includes("user
   throw new Error('legacy client credentials still present after build transform');
 }
 
-fs.mkdirSync(outDir, { recursive: true });
-fs.writeFileSync(outPath, html, 'utf8');
-console.log(`Built ${outPath}; legacy client credential gate removed.`);
+// The Vercel project historically used `public` as its Output Directory while
+// the preview branch declares `dist` in vercel.json. Emit the same hardened
+// artifact to both locations so the preview remains fail-safe regardless of
+// which setting has precedence. This change is preview-branch only.
+for (const outDir of outputDirs) {
+  fs.mkdirSync(outDir, { recursive: true });
+  const outPath = path.join(outDir, 'index.html');
+  fs.writeFileSync(outPath, html, 'utf8');
+  console.log(`Built ${outPath}; legacy client credential gate removed.`);
+}
