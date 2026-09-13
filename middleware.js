@@ -97,4 +97,4 @@ export default async function middleware(request) {
   });
 }
 
-export const config = { matcher: '/:path*' };
+export const config = { matcher: '/:path*', runtime: 'nodejs' };
