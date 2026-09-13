@@ -1,0 +1,12 @@
+{
+  "name": "pm-map-portal-sso-preview",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test:sso": "node scripts/test-sso.mjs"
+  },
+  "dependencies": {
+    "@vercel/functions": "3.9.5"
+  }
+}
