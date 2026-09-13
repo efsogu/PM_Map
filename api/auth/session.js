@@ -2,6 +2,8 @@
 
 const { verifySession, parseCookies } = require('../../lib/sso');
 
+const COOKIE_NAME = '__Host-pm_map_session';
+
 module.exports = function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store, max-age=0');
   if (req.method !== 'GET') {
@@ -14,7 +16,7 @@ module.exports = function handler(req, res) {
 
   try {
     const cookies = parseCookies(req.headers.cookie);
-    const session = verifySession(cookies.pm_map_session, secret);
+    const session = verifySession(cookies[COOKIE_NAME], secret);
     return res.status(200).json({ ok:true, role:session.role, sub:session.sub, exp:session.exp });
   } catch {
     return res.status(401).json({ ok:false, error:'session_required' });
